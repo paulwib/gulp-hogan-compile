@@ -53,8 +53,10 @@ describe('gulp-compile-hogan', function() {
             stream.on('data', function(newFile){
                 var lines = newFile.contents.toString().split(gutil.linefeed);
                 lines[0].should.equal('define(function(require) {');
-                lines[1].should.equal("    var hogan = require('hogan-updated');");
+                lines[1].should.equal("    var Hogan = require('hogan');");
                 lines[2].should.equal("    var templates = {};");
+                lines[3].should.match(/templates\["file"\] = new Hogan.Template/);
+                lines[4].should.match(/templates\["file2"\] = new Hogan.Template/);
                 lines.pop().should.equal('})');
                 lines.pop().should.equal('    return templates;');
                 done();
@@ -71,8 +73,10 @@ describe('gulp-compile-hogan', function() {
             stream.on('data', function(newFile){
                 var lines = newFile.contents.toString().split(gutil.linefeed);
                 lines[0].should.equal('module.exports = (function() {');
-                lines[1].should.equal("    var hogan = require('hogan-updated');");
+                lines[1].should.equal("    var Hogan = require('hogan');");
                 lines[2].should.equal("    var templates = {};");
+                lines[3].should.match(/templates\["file"\] = new Hogan.Template/);
+                lines[4].should.match(/templates\["file2"\] = new Hogan.Template/);
                 lines.pop().should.equal('})();');
                 lines.pop().should.equal('    return templates;');
                 done();
@@ -82,8 +86,11 @@ describe('gulp-compile-hogan', function() {
             stream.end();
         });
 
-
         it('should create mustache template objects with a render method', function(done) {
+
+            // No wrapper so need to make Hogan (capitalised) available
+            var Hogan = require('hogan-updated');
+
             var stream = compile("test.js", {
                 wrapper: false
             });

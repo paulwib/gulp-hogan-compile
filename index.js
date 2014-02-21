@@ -21,6 +21,7 @@ module.exports = function(fileName, options) {
         templateName: function(file) {
             return path.basename(file.relative, path.extname(file.relative));
         },
+        hoganModule: 'hogan'
     }, options || {});
 
     options.templateOptions.asString = true;
@@ -43,7 +44,7 @@ module.exports = function(fileName, options) {
         }
         templateName = options.templateName(file);
         compiledTemplate  = hogan.compile(file.contents.toString('utf8'), options.templateOptions);
-        jsString = '    templates["' + templateName + '"] = new hogan.Template(' + compiledTemplate + ');';
+        jsString = '    templates["' + templateName + '"] = new Hogan.Template(' + compiledTemplate + ');';
         buffer.push(jsString);
     }
 
@@ -53,18 +54,20 @@ module.exports = function(fileName, options) {
         }
         // Unwrapped
         buffer.unshift("    var templates = {};");
-        buffer.unshift("    var hogan = require('hogan-updated');");
 
+        // All wrappers require a hogan module
+        if (options.wrapper) {
+            buffer.unshift("    var Hogan = require('" + options.hoganModule  + "');");
+            buffer.push("    return templates;");
+        }
         // AMD wrapper
         if (options.wrapper === 'amd') {
             buffer.unshift("define(function(require) {");
-            buffer.push("    return templates;");
             buffer.push("})");
         }
         // CommonJS wrapper
         else if (options.wrapper === 'commonjs') {
             buffer.unshift("module.exports = (function() {");
-            buffer.push("    return templates;");
             buffer.push("})();");
         }
 

@@ -51,8 +51,12 @@ Either `amd`, `commonjs` or `false` for no wrapper, defaults to `amd`. If wrappe
 
 ### templateOptions `object`
 
-Option passed through to `hogan.compile`. It will always set `asString` to `true`, so you can't override that.
+Options passed through to `hogan.compile`. It will always set `asString` to `true`, so you can't override that.
 
 ## templateName `function(file)`
 
 A function that will be passed the file and should return a name for the template. By default uses the basename of the file without an extension.
+
+## hoganModule `string`
+
+The name of the hogan module *in your app*, defaults to `hogan`. If you're not using a wrapper then the global `hogan` must be available;
