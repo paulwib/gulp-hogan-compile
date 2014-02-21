@@ -26,6 +26,12 @@ describe('gulp-compile-hogan', function() {
             contents: new Buffer("{{greeting}} world")
         });
 
+        fakeFile3 = new File({
+            cwd: "",
+            base: "test",
+            path: "test/file3.js",
+            contents: new Buffer("<% greeting %> world")
+        });
     });
     describe('compile()', function() {
         it('should compile templates into one file', function(done) {
@@ -87,10 +93,7 @@ describe('gulp-compile-hogan', function() {
         });
 
         it('should create mustache template objects with a render method', function(done) {
-
-            // No wrapper so need to make Hogan (capitalised) available
             var Hogan = require('hogan-updated');
-
             var stream = compile("test.js", {
                 wrapper: false
             });
@@ -104,6 +107,24 @@ describe('gulp-compile-hogan', function() {
             });
             stream.write(fakeFile);
             stream.write(fakeFile2);
+            stream.end();
+        });
+
+        it('should pass options to the hogan rendering engine', function(done) {
+            var Hogan = require('hogan-updated');
+            var stream = compile("test.js", {
+                wrapper: false,
+                templateOptions: {
+                    delimiters: '<% %>'
+                }
+            });
+            stream.on('data', function(newFile) {
+                eval(newFile.contents.toString());
+                var rendered = templates.file3.render({ greeting: 'hello'});
+                rendered.should.equal('hello world');
+                done();
+            });
+            stream.write(fakeFile3);
             stream.end();
         });
     });
