@@ -54,6 +54,19 @@ describe('gulp-compile-hogan', function() {
             stream.end();
         });
 
+        it('should use options.newLine', function(done) {
+            var stream = compile("test.js", {
+                newLine: "\r\n"
+            });
+            stream.on('data', function(newFile){
+                var lines = newFile.contents.toString().split("\r\n");
+                lines.length.should.equal(7);
+                done();
+            });
+            stream.write(fakeFile);
+            stream.write(fakeFile2);
+            stream.end();
+        });
         it('should compile string templates to amd modules', function(done) {
             var stream = compile("test.js");
             stream.on('data', function(newFile){
