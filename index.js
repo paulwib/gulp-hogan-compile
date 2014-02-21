@@ -16,7 +16,7 @@ module.exports = function(fileName, options) {
     }
     options = _.assign({
         newLine: gutil.linefeed,
-        wrapper: 'amd', // amd, commonjs or false for no wrapper
+        wrapper: 'amd',
         templateOptions: {},
         templateName: function(file) {
             return path.basename(file.relative, path.extname(file.relative));
@@ -33,7 +33,7 @@ module.exports = function(fileName, options) {
 
     function bufferContents(file) {
         if (file.isNull()) {
-            return; // ignore
+            return;
         }
         if (file.isStream()) {
             return this.emit('error', new PluginError('gulp-hogan-compile',  'Streaming not supported'));
