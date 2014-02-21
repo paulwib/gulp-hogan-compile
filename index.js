@@ -16,6 +16,7 @@ module.exports = function(fileName, options) {
     }
     options = _.assign({
         newLine: gutil.linefeed,
+        wrapper: 'amd', // amd, commonjs or false for no wrapper
         templateOptions: {},
         templateName: function(file) {
             return path.basename(file.relative, path.extname(file.relative));
@@ -50,14 +51,22 @@ module.exports = function(fileName, options) {
         if (buffer.length === 0) {
             return this.emit('end');
         }
-        // AMD header
-        buffer.unshift("define(function(require) {");
-        buffer.unshift("    var hogan = require('hogan');");
+        // Unwrapped
         buffer.unshift("    var templates = {};");
+        buffer.unshift("    var hogan = require('hogan-updated');");
 
-        // Footer
-        buffer.push("    return templates;" + options.newLine);
-        buffer.push("})");
+        // AMD wrapper
+        if (options.wrapper === 'amd') {
+            buffer.unshift("define(function(require) {");
+            buffer.push("    return templates;");
+            buffer.push("})");
+        }
+        // CommonJS wrapper
+        else if (options.wrapper === 'commonjs') {
+            buffer.unshift("module.exports = (function() {");
+            buffer.push("    return templates;");
+            buffer.push("})();");
+        }
 
         this.emit('data', new File({
             cwd: firstFile.cwd,
