@@ -59,4 +59,4 @@ A function that will be passed the file and should return a name for the templat
 
 ## hoganModule `string`
 
-The name of the hogan module *in your app*, defaults to `hogan`. If you're not using a wrapper then the global `hogan` must be available;
+The name of the hogan module *in your app*, defaults to `hogan`. If you're not using a wrapper then the global `Hogan` must be available;
