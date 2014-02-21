@@ -8,17 +8,21 @@ var gutil = require('gulp-util');
 var PluginError = gutil.PluginError;
 var File = gutil.File;
 var hogan = require('hogan-updated');
+var _ = require('lodash');
 
-module.exports = function(fileName, opt) {
+module.exports = function(fileName, options) {
     if (!fileName) {
-        throw new PluginError('gulp-hogan-compile',  'Missing fileName option for gulp-hogan-compile');
+        throw new PluginError('gulp-hogan-compile',  'Missing fileName argument for gulp-hogan-compile');
     }
-    if (!opt) {
-        opt = {};
-    }
-    if (!opt.newLine) {
-        opt.newLine = gutil.linefeed;
-    }
+    options = _.assign({
+        newLine: gutil.linefeed,
+        templateOptions: {},
+        templateName: function(file) {
+            return path.basename(file.relative, path.extname(file.relative));
+        },
+    }, options || {});
+
+    options.templateOptions.asString = true;
 
     var buffer = [],
         firstFile = null,
@@ -36,8 +40,8 @@ module.exports = function(fileName, opt) {
         if (!firstFile) {
             firstFile = file;
         }
-        templateName = path.basename(file.relative, path.extname(file.relative));
-        compiledTemplate  = hogan.compile(file.contents.toString('utf8'), { asString: true });
+        templateName = options.templateName(file);
+        compiledTemplate  = hogan.compile(file.contents.toString('utf8'), options.templateOptions);
         jsString = '    templates["' + templateName + '"] = new hogan.Template(' + compiledTemplate + ');';
         buffer.push(jsString);
     }
@@ -52,14 +56,14 @@ module.exports = function(fileName, opt) {
         buffer.unshift("    var templates = {};");
 
         // Footer
-        buffer.push("    return templates;" + opt.newLine);
+        buffer.push("    return templates;" + options.newLine);
         buffer.push("})");
 
         this.emit('data', new File({
             cwd: firstFile.cwd,
             base: firstFile.base,
             path: path.join(firstFile.base, fileName),
-            contents: new Buffer(buffer.join(opt.newLine))
+            contents: new Buffer(buffer.join(options.newLine))
         }));
 
         this.emit('end');
