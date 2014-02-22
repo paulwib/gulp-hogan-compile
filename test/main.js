@@ -67,6 +67,7 @@ describe('gulp-compile-hogan', function() {
             stream.write(fakeFile2);
             stream.end();
         });
+
         it('should compile string templates to amd modules', function(done) {
             var stream = compile("test.js");
             stream.on('data', function(newFile){
