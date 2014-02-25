@@ -44,7 +44,7 @@ module.exports = function(fileName, options) {
         }
         templateName = options.templateName(file);
         compiledTemplate  = hogan.compile(file.contents.toString('utf8'), options.templateOptions);
-        jsString = '    templates["' + templateName + '"] = new Hogan.Template(' + compiledTemplate + ');';
+        jsString = '    templates[\'' + templateName + '\'] = new Hogan.Template(' + compiledTemplate + ');';
         buffer.push(jsString);
     }
 

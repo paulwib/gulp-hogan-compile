@@ -9,33 +9,18 @@ require('mocha');
 
 describe('gulp-compile-hogan', function() {
 
-    var fakeFile, fakeFile2;
-
-    before(function() {
-        fakeFile = new File({
-            cwd: "",
-            base: "test",
-            path: "test/file.js",
-            contents: new Buffer("hello {{place}}")
+    function getFakeFile(path, content) {
+        return new File({
+            cwd: '',
+            base: 'test',
+            path: path,
+            contents: new Buffer(content)
         });
+    }
 
-        fakeFile2 = new File({
-            cwd: "",
-            base: "test",
-            path: "test/file2.js",
-            contents: new Buffer("{{greeting}} world")
-        });
-
-        fakeFile3 = new File({
-            cwd: "",
-            base: "test",
-            path: "test/file3.js",
-            contents: new Buffer("<% greeting %> world")
-        });
-    });
     describe('compile()', function() {
         it('should compile templates into one file', function(done) {
-            var stream = compile("test.js");
+            var stream = compile('test.js');
             stream.on('data', function(newFile){
                 should.exist(newFile);
                 should.exist(newFile.path);
@@ -43,90 +28,90 @@ describe('gulp-compile-hogan', function() {
                 should.exist(newFile.contents);
 
                 var newFilePath = path.resolve(newFile.path);
-                var expectedFilePath = path.resolve("test/test.js");
+                var expectedFilePath = path.resolve('test/test.js');
                 newFilePath.should.equal(expectedFilePath);
-                newFile.relative.should.equal("test.js");
+                newFile.relative.should.equal('test.js');
                 Buffer.isBuffer(newFile.contents).should.equal(true);
                 done();
             });
-            stream.write(fakeFile);
-            stream.write(fakeFile2);
+            stream.write(getFakeFile('test/file1.js', 'hello {{place}}'));
+            stream.write(getFakeFile('test/file2.js', '{{greeting}} world'));
             stream.end();
         });
 
         it('should use options.newLine', function(done) {
-            var stream = compile("test.js", {
-                newLine: "\r\n"
+            var stream = compile('test.js', {
+                newLine: '\r\n'
             });
             stream.on('data', function(newFile){
-                var lines = newFile.contents.toString().split("\r\n");
+                var lines = newFile.contents.toString().split('\r\n');
                 lines.length.should.equal(7);
                 done();
             });
-            stream.write(fakeFile);
-            stream.write(fakeFile2);
+            stream.write(getFakeFile('test/file1.js', 'hello {{place}}'));
+            stream.write(getFakeFile('test/file2.js', '{{greeting}} world'));
             stream.end();
         });
 
         it('should compile string templates to amd modules', function(done) {
-            var stream = compile("test.js");
+            var stream = compile('test.js');
             stream.on('data', function(newFile){
                 var lines = newFile.contents.toString().split(gutil.linefeed);
                 lines[0].should.equal('define(function(require) {');
-                lines[1].should.equal("    var Hogan = require('hogan');");
-                lines[2].should.equal("    var templates = {};");
-                lines[3].should.match(/templates\["file"\] = new Hogan.Template/);
-                lines[4].should.match(/templates\["file2"\] = new Hogan.Template/);
+                lines[1].should.equal('    var Hogan = require(\'hogan\');');
+                lines[2].should.equal('    var templates = {};');
+                lines[3].should.match(/templates\['file1'\] = new Hogan.Template/);
+                lines[4].should.match(/templates\['file2'\] = new Hogan.Template/);
                 lines.pop().should.equal('})');
                 lines.pop().should.equal('    return templates;');
                 done();
             });
-            stream.write(fakeFile);
-            stream.write(fakeFile2);
+            stream.write(getFakeFile('test/file1.js', 'hello {{place}}'));
+            stream.write(getFakeFile('test/file2.js', '{{greeting}} world'));
             stream.end();
         });
 
         it('should compile string templates to commonjs modules', function(done) {
-            var stream = compile("test.js", {
+            var stream = compile('test.js', {
                 wrapper: 'commonjs'
             });
             stream.on('data', function(newFile){
                 var lines = newFile.contents.toString().split(gutil.linefeed);
                 lines[0].should.equal('module.exports = (function() {');
-                lines[1].should.equal("    var Hogan = require('hogan');");
-                lines[2].should.equal("    var templates = {};");
-                lines[3].should.match(/templates\["file"\] = new Hogan.Template/);
-                lines[4].should.match(/templates\["file2"\] = new Hogan.Template/);
+                lines[1].should.equal('    var Hogan = require(\'hogan\');');
+                lines[2].should.equal('    var templates = {};');
+                lines[3].should.match(/templates\['file1'\] = new Hogan.Template/);
+                lines[4].should.match(/templates\['file2'\] = new Hogan.Template/);
                 lines.pop().should.equal('})();');
                 lines.pop().should.equal('    return templates;');
                 done();
             });
-            stream.write(fakeFile);
-            stream.write(fakeFile2);
+            stream.write(getFakeFile('test/file1.js', 'hello {{place}}'));
+            stream.write(getFakeFile('test/file2.js', '{{greeting}} world'));
             stream.end();
         });
 
         it('should create mustache template objects with a render method', function(done) {
             var Hogan = require('hogan-updated');
-            var stream = compile("test.js", {
+            var stream = compile('test.js', {
                 wrapper: false
             });
             stream.on('data', function(newFile) {
                 eval(newFile.contents.toString());
-                var rendered = templates.file.render({ place: 'world'});
+                var rendered = templates.file1.render({ place: 'world'});
                 rendered.should.equal('hello world');
                 var rendered2 = templates.file2.render({ greeting: 'hello'});
                 rendered2.should.equal('hello world');
                 done();
             });
-            stream.write(fakeFile);
-            stream.write(fakeFile2);
+            stream.write(getFakeFile('test/file1.js', 'hello {{place}}'));
+            stream.write(getFakeFile('test/file2.js', '{{greeting}} world'));
             stream.end();
         });
 
         it('should pass options to the hogan rendering engine', function(done) {
             var Hogan = require('hogan-updated');
-            var stream = compile("test.js", {
+            var stream = compile('test.js', {
                 wrapper: false,
                 templateOptions: {
                     delimiters: '<% %>'
@@ -138,7 +123,7 @@ describe('gulp-compile-hogan', function() {
                 rendered.should.equal('hello world');
                 done();
             });
-            stream.write(fakeFile3);
+            stream.write(getFakeFile('test/file3.js', '<% greeting %> world'));
             stream.end();
         });
     });
