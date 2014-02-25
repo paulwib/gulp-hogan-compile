@@ -1,26 +1,49 @@
 {
   "name": "gulp-hogan-compile",
   "version": "0.1.0",
-  "description": "A gulp plugin to compile mustache HTML templates to JavaScript functions using hogan",
+  "description": "A gulp plugin to compile mustache HTML templates to JavaScript functions using hogan.",
   "main": "index.js",
+  "homepage": "https://github.com/paulwib/gulp-hogan-compiler",
+  "bugs": "https://github.com/paulwib/gulp-hogan-compiler/issues",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/paulwib/gulp-hogan-compile.git"
+  },
   "directories": {
     "test": "test"
+  },
+  "author": {
+    "name": "Paul Willoughby",
+    "url": "https://github.com/paulwib"
   },
   "dependencies": {
     "hogan-updated": "~3.1.0",
     "buffer": "~2.1.4",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "through": "~2.3.4",
+    "gulp-util": "~2.2.14"
   },
   "devDependencies": {
     "should": "~3.1.2",
     "mocha": "~1.17.1"
   },
+  "engines": {
+    "node": ">=0.9"
+  },
   "scripts": {
     "test": "mocha"
   },
   "keywords": [
-    "gulpplugin templates mustache hogan"
+    [
+      "gulpplugin",
+      "templates",
+      "mustache",
+      "hogan"
+    ]
   ],
-  "author": "Paul Willoughby <paul@fivetide.com>",
-  "license": "MIT"
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ]
 }
