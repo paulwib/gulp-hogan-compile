@@ -18,12 +18,12 @@
   },
   "dependencies": {
     "hogan-updated": "~3.1.0",
-    "buffer": "~2.1.4",
     "lodash": "~2.4.1",
     "through": "~2.3.4",
     "gulp-util": "~2.2.14"
   },
   "devDependencies": {
+    "buffer": "~2.1.4",
     "should": "~3.1.2",
     "mocha": "~1.17.1"
   },
