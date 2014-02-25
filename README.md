@@ -1,3 +1,5 @@
+A [gulp][] plugin to compile [mustache][] HTML templates to JavaScript functions using [hogan][].
+
 ## Usage
 
 In `templates/test.html`:
@@ -32,6 +34,8 @@ This will compile the templates into a JavaScript AMD module using `hogan.compil
 
 **It uses the `hogan-updated` module**. This works with the latest version of hogan for bower (currently the npm version of hogan is `~2.0.0`, but bower is around `~3.0.0`).
 
+It will `require('hogan')` so that module needs to be available, for example by installing it with [bower][]. You can change the name/path of the hogan module at compile time  with `options.hoganModule`.
+
 ## Parameters
 
 * file `string`
@@ -59,4 +63,9 @@ A function that will be passed the file and should return a name for the templat
 
 ## hoganModule `string`
 
-The name of the hogan module *in your app*, defaults to `hogan`. If you're not using a wrapper then the global `Hogan` must be available;
+The name of the hogan module *in your app*, defaults to `hogan`. If you're not using a wrapper then the global `Hogan` must be available.
+
+[gulp]:http://gulpjs.com
+[mustache]:http://mustache.github.io
+[hogan]:https://github.com/twitter/hogan.js
+[bower]:https://github.com/bower/bower

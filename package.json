@@ -1,7 +1,7 @@
 {
   "name": "gulp-hogan-compile",
   "version": "0.0.0",
-  "description": "Pre-compile hogan templates to javascript",
+  "description": "A gulp plugin to compile mustache HTML templates to JavaScript functions using hogan",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -19,7 +19,7 @@
     "test": "mocha"
   },
   "keywords": [
-    "gulpplugin"
+    "gulpplugin templates mustache hogan"
   ],
   "author": "Paul Willoughby <paul@fivetide.com>",
   "license": "MIT"
