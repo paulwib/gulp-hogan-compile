@@ -34,16 +34,10 @@
     "test": "mocha"
   },
   "keywords": [
-    [
-      "gulpplugin",
-      "templates",
-      "mustache",
-      "hogan"
-    ]
+    "gulpplugin",
+    "templates",
+    "mustache",
+    "hogan"
   ],
-  "licenses": [
-    {
-      "type": "MIT"
-    }
-  ]
+  "license": "MIT"
 }
