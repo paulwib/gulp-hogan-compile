@@ -1,7 +1,3 @@
-/**
- * Compile hogan templates into a js file
- */
-
 'use strict';
 
 var through = require('through');
@@ -13,24 +9,36 @@ var File = gutil.File;
 var hogan = require('hogan.js');
 var extend = require('extend');
 
-module.exports = function(fileName, options) {
-    if (!fileName) {
-        throw new PluginError('gulp-hogan-compile',  'Missing fileName argument for gulp-hogan-compile');
+/**
+ * Compile hogan templates into a js file
+ *
+ * @param {string|object} dest - If a string will be used as a filename, if an object templates
+ * will be addded to it and gulp.dest() will have no affect (and other string related settings ignored)
+ * @param {object} options - see README
+ */
+module.exports = function(dest, options) {
+    if (!dest) {
+        throw new PluginError('gulp-hogan-compile',  'Missing dest argument for gulp-hogan-compile');
     }
+
+    // Store templates directly in dest if it is an object instead of a string file name
+    var templates = typeof dest === 'object' ? dest : {},
+        firstFile = null;
+
     options = extend(true, {
         newLine: gutil.linefeed,
         wrapper: 'amd',
-        templateOptions: {
-            asString: true
-        },
+        templateOptions: {},
         templateName: function(file) {
             return path.basename(file.relative, path.extname(file.relative));
         },
         hoganModule: 'hogan'
     }, options || {});
 
-    var templates = {},
-        firstFile = null;
+    // Do not convert to strings if dest is an object
+    options.templateOptions.asString = typeof dest !== 'object';
+
+    return through(bufferContents, endStream);
 
     function bufferContents(file) {
         if (file.isNull()) {
@@ -47,6 +55,10 @@ module.exports = function(fileName, options) {
 
     function endStream(){
         if (templates.length === 0) {
+            return this.emit('end');
+        }
+        // If an object templates have been assigned, nthing to do
+        if (typeof dest === 'object') {
             return this.emit('end');
         }
 
@@ -76,12 +88,10 @@ module.exports = function(fileName, options) {
         this.emit('data', new File({
             cwd: firstFile.cwd,
             base: firstFile.base,
-            path: path.join(firstFile.base, fileName),
+            path: path.join(firstFile.base, dest),
             contents: new Buffer(lines.join(options.newLine))
         }));
 
         this.emit('end');
     }
-
-    return through(bufferContents, endStream);
 };

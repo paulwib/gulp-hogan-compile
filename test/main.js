@@ -1,3 +1,7 @@
+/* global describe, it */
+
+'use strict';
+
 var compile = require('../');
 var should = require('should');
 var os = require('os');
@@ -91,13 +95,11 @@ describe('gulp-compile-hogan', function() {
             stream.end();
         });
 
-        it('should create mustache template objects with a render method', function(done) {
-            var Hogan = require('hogan.js');
-            var stream = compile('test.js', {
-                wrapper: false
-            });
-            stream.on('data', function(newFile) {
-                eval(newFile.contents.toString());
+        it('should allow passing an object to populate with templates instead of a filename', function(done) {
+            var templates = {};
+            var stream = compile(templates);
+            stream.on('end', function(newFile) {
+                //eval(newFile.contents.toString());
                 var rendered = templates.file1.render({ place: 'world'});
                 rendered.should.equal('hello world');
                 var rendered2 = templates.file2.render({ greeting: 'hello'});
@@ -110,15 +112,14 @@ describe('gulp-compile-hogan', function() {
         });
 
         it('should pass options to the hogan rendering engine', function(done) {
-            var Hogan = require('hogan.js');
-            var stream = compile('test.js', {
-                wrapper: false,
+            var templates = {};
+            var stream = compile(templates, {
                 templateOptions: {
                     delimiters: '<% %>'
                 }
             });
-            stream.on('data', function(newFile) {
-                eval(newFile.contents.toString());
+            stream.on('end', function(newFile) {
+                //eval(newFile.contents.toString());
                 var rendered = templates.file3.render({ greeting: 'hello'});
                 rendered.should.equal('hello world');
                 done();
