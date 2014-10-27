@@ -17,7 +17,7 @@
     "url": "https://github.com/paulwib"
   },
   "dependencies": {
-    "hogan-updated": "~3.1.0",
+    "hogan.js": "~3.0.0",
     "lodash": "~2.4.1",
     "through": "~2.3.4",
     "gulp-util": "~2.2.14"

@@ -92,7 +92,7 @@ describe('gulp-compile-hogan', function() {
         });
 
         it('should create mustache template objects with a render method', function(done) {
-            var Hogan = require('hogan-updated');
+            var Hogan = require('hogan.js');
             var stream = compile('test.js', {
                 wrapper: false
             });
@@ -110,7 +110,7 @@ describe('gulp-compile-hogan', function() {
         });
 
         it('should pass options to the hogan rendering engine', function(done) {
-            var Hogan = require('hogan-updated');
+            var Hogan = require('hogan.js');
             var stream = compile('test.js', {
                 wrapper: false,
                 templateOptions: {

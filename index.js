@@ -7,7 +7,7 @@ var path = require('path');
 var gutil = require('gulp-util');
 var PluginError = gutil.PluginError;
 var File = gutil.File;
-var hogan = require('hogan-updated');
+var hogan = require('hogan.js');
 var _ = require('lodash');
 
 module.exports = function(fileName, options) {
