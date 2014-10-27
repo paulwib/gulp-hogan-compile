@@ -34,10 +34,26 @@ This will compile the templates into a JavaScript AMD module using `hogan.compil
 
 It will `require('hogan')` so that module needs to be available, for example by installing it with [bower][]. You can change the name/path of the hogan module at compile time  with `options.hoganModule`.
 
+Alternatively you can pass an object to have it populated with executable templates, which is useful if you need templates as part of a build step, for example:
+
+```javascript
+var compiler = require('gulp-hogan-compile');
+var templates = {};
+
+gulp.task('templates', function() {
+    gulp.src('templates/**/*.html')
+        .pipe(compiler(templates));
+});
+
+gulp.task('render', ['templates'], function() {
+	// Do something with templates, like passing to a static site generator
+});
+```
+
 ## Parameters
 
-* file `string`
-    * The name of the file to use for the compiled templates
+* dest `string|object`
+    * Either the name of a file or an object - if using an object it will be populated with compiled template code and no file will be outputted (so all string output related options below are ignored)
 * options `object`
     * Options passed to the hogan task
 
@@ -45,19 +61,19 @@ It will `require('hogan')` so that module needs to be available, for example by 
 
 ### newLine `string`
 
-The line delimiter, defaults to your operating system's newline.
+The line delimiter, defaults to your operating system's newline. Ignored if `dest` is an object.
 
 ### wrapper `string`
 
-Either `amd`, `commonjs` or `false` for no wrapper, defaults to `amd`. If wrapper is `false` a local var `templates` will be defined containing the templates.
+Either `amd`, `commonjs` or `false` for no wrapper, defaults to `amd`. If wrapper is `false` a local var `templates` will be defined containing the templates. Ignored if `dest` is an object.
 
 ### templateOptions `object`
 
-Options passed through to `hogan.compile`. It will always set `asString` to `true`, so you can't override that.
+Options passed through to `hogan.compile`. `asString` will be set depending on whether output is a file or an object, any passed setting is ignored.
 
 ### templateName `function(file)`
 
-A function that will be passed the file and should return a name for the template. By default uses the basename of the file without an extension.
+A function that will be passed the file and should return a name for the template. By default uses the relative path and basename of the file without an extension.
 
 ### hoganModule `string`
 
