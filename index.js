@@ -11,29 +11,26 @@ var gutil = require('gulp-util');
 var PluginError = gutil.PluginError;
 var File = gutil.File;
 var hogan = require('hogan.js');
-var _ = require('lodash');
+var extend = require('extend');
 
 module.exports = function(fileName, options) {
     if (!fileName) {
         throw new PluginError('gulp-hogan-compile',  'Missing fileName argument for gulp-hogan-compile');
     }
-    options = _.assign({
+    options = extend(true, {
         newLine: gutil.linefeed,
         wrapper: 'amd',
-        templateOptions: {},
+        templateOptions: {
+            asString: true
+        },
         templateName: function(file) {
             return path.basename(file.relative, path.extname(file.relative));
         },
         hoganModule: 'hogan'
     }, options || {});
 
-    options.templateOptions.asString = true;
-
-    var buffer = [],
-        firstFile = null,
-        templateName,
-        compiledTemplate,
-        jsString;
+    var templates = {},
+        firstFile = null;
 
     function bufferContents(file) {
         if (file.isNull()) {
@@ -45,40 +42,42 @@ module.exports = function(fileName, options) {
         if (!firstFile) {
             firstFile = file;
         }
-        templateName = options.templateName(file);
-        compiledTemplate  = hogan.compile(file.contents.toString('utf8'), options.templateOptions);
-        jsString = '    templates[\'' + templateName + '\'] = new Hogan.Template(' + compiledTemplate + ');';
-        buffer.push(jsString);
+        templates[options.templateName(file)] = hogan.compile(file.contents.toString('utf8'), options.templateOptions);
     }
 
     function endStream(){
-        if (buffer.length === 0) {
+        if (templates.length === 0) {
             return this.emit('end');
         }
+
+        var lines = [];
+        for (var name in templates) {
+            lines.push('    templates[\'' + name + '\'] = new Hogan.Template(' + templates[name] + ');');
+        }
         // Unwrapped
-        buffer.unshift('    var templates = {};');
+        lines.unshift('    var templates = {};');
 
         // All wrappers require a hogan module
         if (options.wrapper) {
-            buffer.unshift("    var Hogan = require('" + options.hoganModule  + "');");
-            buffer.push('    return templates;');
+            lines.unshift('    var Hogan = require(\'' + options.hoganModule  + '\');');
+            lines.push('    return templates;');
         }
         // AMD wrapper
         if (options.wrapper === 'amd') {
-            buffer.unshift('define(function(require) {');
-            buffer.push('})');
+            lines.unshift('define(function(require) {');
+            lines.push('})');
         }
         // CommonJS wrapper
         else if (options.wrapper === 'commonjs') {
-            buffer.unshift('module.exports = (function() {');
-            buffer.push('})();');
+            lines.unshift('module.exports = (function() {');
+            lines.push('})();');
         }
 
         this.emit('data', new File({
             cwd: firstFile.cwd,
             base: firstFile.base,
             path: path.join(firstFile.base, fileName),
-            contents: new Buffer(buffer.join(options.newLine))
+            contents: new Buffer(lines.join(options.newLine))
         }));
 
         this.emit('end');
