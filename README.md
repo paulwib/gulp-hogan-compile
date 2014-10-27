@@ -1,3 +1,6 @@
+gulp-hogan-compile [![NPM version][npm-image]][npm-url] [![Dependency Status][depstat-image]][depstat-url] [![Build Status][travis-image]][travis-url]
+===
+
 A [gulp][] plugin to compile [mustache][] HTML templates to JavaScript functions using [hogan][].
 
 ## Usage
@@ -83,3 +86,12 @@ The name of the hogan module *in your app*, defaults to `hogan`. If you're not u
 [mustache]:http://mustache.github.io
 [hogan]:https://github.com/twitter/hogan.js
 [bower]:https://github.com/bower/bower
+
+[npm-url]: https://npmjs.org/package/gulp-hogan-compile
+[npm-image]: http://img.shields.io/npm/v/gulp-hogan-compile.svg?style=flat
+
+[depstat-url]: https://david-dm.org/paulwib/gulp-hogan-compile
+[depstat-image]: https://david-dm.org/paulwib/gulp-hogan-compile.svg?style=flat
+
+[travis-image]: https://travis-ci.org/paulwib/gulp-hogan-compile.svg
+[travis-url]: https://travis-ci.org/paulwib/gulp-hogan-compile
