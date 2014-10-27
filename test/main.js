@@ -4,19 +4,19 @@
 
 var compile = require('../');
 var should = require('should');
+var expect = require('chai').expect;
 var os = require('os');
 var path = require('path');
 var gutil = require('gulp-util');
 var File = gutil.File;
 var Buffer = require('buffer').Buffer;
-require('mocha');
 
 describe('gulp-compile-hogan', function() {
 
     function getFakeFile(path, content) {
         return new File({
             cwd: '',
-            base: 'test',
+            base: 'test/',
             path: path,
             contents: new Buffer(content)
         });
@@ -64,13 +64,13 @@ describe('gulp-compile-hogan', function() {
                 lines[0].should.equal('define(function(require) {');
                 lines[1].should.equal('    var Hogan = require(\'hogan\');');
                 lines[2].should.equal('    var templates = {};');
-                lines[3].should.match(/templates\['file1'\] = new Hogan.Template/);
+                lines[3].should.match(/templates\['foo\/file1'\] = new Hogan.Template/);
                 lines[4].should.match(/templates\['file2'\] = new Hogan.Template/);
                 lines.pop().should.equal('})');
                 lines.pop().should.equal('    return templates;');
                 done();
             });
-            stream.write(getFakeFile('test/file1.js', 'hello {{place}}'));
+            stream.write(getFakeFile('test/foo/file1.js', 'hello {{place}}'));
             stream.write(getFakeFile('test/file2.js', '{{greeting}} world'));
             stream.end();
         });
@@ -99,7 +99,6 @@ describe('gulp-compile-hogan', function() {
             var templates = {};
             var stream = compile(templates);
             stream.on('end', function(newFile) {
-                //eval(newFile.contents.toString());
                 var rendered = templates.file1.render({ place: 'world'});
                 rendered.should.equal('hello world');
                 var rendered2 = templates.file2.render({ greeting: 'hello'});
@@ -119,12 +118,26 @@ describe('gulp-compile-hogan', function() {
                 }
             });
             stream.on('end', function(newFile) {
-                //eval(newFile.contents.toString());
                 var rendered = templates.file3.render({ greeting: 'hello'});
                 rendered.should.equal('hello world');
                 done();
             });
             stream.write(getFakeFile('test/file3.js', '<% greeting %> world'));
+            stream.end();
+        });
+
+        it('should name templates after relative path and basename without extension', function(done) {
+            var templates = {};
+            var stream = compile(templates);
+            stream.on('end', function(newFile) {
+                expect(templates['pages/file1']).to.be.an('object');
+                expect(templates['partials/file2']).to.be.an('object');
+                expect(templates['views/special/file2']).to.be.an('object');
+                done();
+            });
+            stream.write(getFakeFile('test/pages/file1.js', 'hello {{place}}'));
+            stream.write(getFakeFile('test/partials/file2.js', '{{greeting}} world'));
+            stream.write(getFakeFile('test/views/special/file2.js', '{{greeting}} world'));
             stream.end();
         });
     });

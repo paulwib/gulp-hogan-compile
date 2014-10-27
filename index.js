@@ -30,7 +30,10 @@ module.exports = function(dest, options) {
         wrapper: 'amd',
         templateOptions: {},
         templateName: function(file) {
-            return path.basename(file.relative, path.extname(file.relative));
+            return path.join(
+                path.dirname(file.relative),
+                path.basename(file.relative, path.extname(file.relative))
+            );
         },
         hoganModule: 'hogan'
     }, options || {});
