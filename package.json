@@ -18,14 +18,14 @@
   },
   "dependencies": {
     "hogan.js": "~3.0.0",
-    "through": "~2.3.4",
-    "gulp-util": "~2.2.14"
+    "through": "~2.3.0",
+    "gulp-util": "~3.0.1"
   },
   "devDependencies": {
-    "buffer": "~2.1.4",
     "chai": "^1.9.2",
-    "mocha": "~1.17.1",
-    "should": "~3.1.2"
+    "mocha": "~2.0.0",
+    "mversion": "^1.6.1",
+    "should": "~4.0.0"
   },
   "engines": {
     "node": ">=0.9"
