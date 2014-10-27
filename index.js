@@ -1,6 +1,9 @@
 /**
-* Compile hogan templates into a js file
-*/
+ * Compile hogan templates into a js file
+ */
+
+'use strict';
+
 var through = require('through');
 var os = require('os');
 var path = require('path');
@@ -53,22 +56,22 @@ module.exports = function(fileName, options) {
             return this.emit('end');
         }
         // Unwrapped
-        buffer.unshift("    var templates = {};");
+        buffer.unshift('    var templates = {};');
 
         // All wrappers require a hogan module
         if (options.wrapper) {
             buffer.unshift("    var Hogan = require('" + options.hoganModule  + "');");
-            buffer.push("    return templates;");
+            buffer.push('    return templates;');
         }
         // AMD wrapper
         if (options.wrapper === 'amd') {
-            buffer.unshift("define(function(require) {");
-            buffer.push("})");
+            buffer.unshift('define(function(require) {');
+            buffer.push('})');
         }
         // CommonJS wrapper
         else if (options.wrapper === 'commonjs') {
-            buffer.unshift("module.exports = (function() {");
-            buffer.push("})();");
+            buffer.unshift('module.exports = (function() {');
+            buffer.push('})();');
         }
 
         this.emit('data', new File({
