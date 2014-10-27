@@ -57,14 +57,10 @@ module.exports = function(dest, options) {
     }
 
     function endStream(){
-        if (templates.length === 0) {
+        // If no templates or dest is an object nothing more to do
+        if (templates.length === 0 || typeof dest === 'object') {
             return this.emit('end');
         }
-        // If an object templates have been assigned, nthing to do
-        if (typeof dest === 'object') {
-            return this.emit('end');
-        }
-
         var lines = [];
         for (var name in templates) {
             lines.push('    templates[\'' + name + '\'] = new Hogan.Template(' + templates[name] + ');');
