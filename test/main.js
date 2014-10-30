@@ -140,5 +140,25 @@ describe('gulp-compile-hogan', function() {
             stream.write(getFakeFile('test/views/special/file2.js', '{{greeting}} world'));
             stream.end();
         });
+
+    	it('should have custom template variable name', function(done) {
+    	    var stream = compile('test.js', {
+                templatesVariableName: "customTemplates"
+            });
+            stream.on('data', function(newFile){
+                var lines = newFile.contents.toString().split(gutil.linefeed);
+                lines[0].should.equal('define(function(require) {');
+                lines[1].should.equal('    var Hogan = require(\'hogan\');');
+                lines[2].should.equal('    var customTemplates = {};');
+                lines[3].should.match(/customTemplates\['foo\/file1'\] = new Hogan.Template/);
+                lines[4].should.match(/customTemplates\['file2'\] = new Hogan.Template/);
+                lines.pop().should.equal('})');
+                lines.pop().should.equal('    return customTemplates;');
+                done();
+            });
+            stream.write(getFakeFile('test/foo/file1.js', 'hello {{place}}'));
+            stream.write(getFakeFile('test/file2.js', '{{greeting}} world'));
+            stream.end();
+    	});
     });
 });
