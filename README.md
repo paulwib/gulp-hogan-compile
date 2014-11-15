@@ -82,6 +82,10 @@ A function that will be passed the file and should return a name for the templat
 
 The name of the hogan module *in your app*, defaults to `hogan`. If you're not using a wrapper then the global `Hogan` must be available.
 
+### namespace `string`
+
+The global variable name for when `wrapper` is `false`. The default value is `'templates'` which means the templates will be available on the `window.templates` object. 
+
 [gulp]:http://gulpjs.com
 [mustache]:http://mustache.github.io
 [hogan]:https://github.com/twitter/hogan.js
