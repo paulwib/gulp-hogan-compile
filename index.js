@@ -35,7 +35,8 @@ module.exports = function(dest, options) {
                 path.basename(file.relative, path.extname(file.relative))
             );
         },
-        hoganModule: 'hogan'
+        hoganModule: 'hogan',
+        namespace: 'templates'
     }, options || {});
 
     // Do not convert to strings if dest is an object
@@ -63,15 +64,15 @@ module.exports = function(dest, options) {
         }
         var lines = [];
         for (var name in templates) {
-            lines.push('    templates[\'' + name + '\'] = new Hogan.Template(' + templates[name] + ');');
+            lines.push('    ' + options.namespace + '[\'' + name + '\'] = new Hogan.Template(' + templates[name] + ');');
         }
         // Unwrapped
-        lines.unshift('    var templates = {};');
+        lines.unshift('    var ' + options.namespace + ' = {};');
 
         // All wrappers require a hogan module
         if (options.wrapper) {
             lines.unshift('    var Hogan = require(\'' + options.hoganModule  + '\');');
-            lines.push('    return templates;');
+            lines.push('    return ' + options.namespace + ';');
         }
         // AMD wrapper
         if (options.wrapper === 'amd') {

@@ -140,5 +140,20 @@ describe('gulp-compile-hogan', function() {
             stream.write(getFakeFile('test/views/special/file2.js', '{{greeting}} world'));
             stream.end();
         });
+
+        it('should use the namespace variable name', function(done) {
+            var stream = compile('test.js', {
+                wrapper: false,
+                namespace: 'JST'
+            });
+            stream.on('data', function(newFile){
+                var lines = newFile.contents.toString().split(gutil.linefeed);
+                lines[0].should.equal('    var JST = {};');
+                lines[1].should.match(/JST\['file1'\] = new Hogan.Template/)
+                done();
+            });
+            stream.write(getFakeFile('test/file1.js', 'hello {{place}}'));
+            stream.end();
+        });
     });
 });
