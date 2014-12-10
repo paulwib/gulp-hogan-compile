@@ -82,6 +82,10 @@ A function that will be passed the file and should return a name for the templat
 
 The name of the hogan module *in your app*, defaults to `hogan`. If you're not using a wrapper then the global `Hogan` must be available.
 
+### includeRuntime `boolean`
+
+If false, the Hogan runtime will not be included in the compiled template file. Use this if you'd like to include the runtime once globally.
+
 [gulp]:http://gulpjs.com
 [mustache]:http://mustache.github.io
 [hogan]:https://github.com/twitter/hogan.js
