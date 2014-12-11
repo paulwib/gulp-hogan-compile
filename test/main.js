@@ -95,6 +95,26 @@ describe('gulp-compile-hogan', function() {
             stream.end();
         });
 
+        it('should not require("hogan") if options.includeRuntime is false', function(done) {
+            var stream = compile('test.js', {
+                wrapper: 'commonjs',
+                includeRuntime: false
+            });
+            stream.on('data', function(newFile){
+                var lines = newFile.contents.toString().split(gutil.linefeed);
+                lines[0].should.equal('module.exports = (function() {');
+                lines[1].should.equal('    var templates = {};');
+                lines[2].should.match(/templates\['file1'\] = new Hogan.Template/);
+                lines[3].should.match(/templates\['file2'\] = new Hogan.Template/);
+                lines.pop().should.equal('})();');
+                lines.pop().should.equal('    return templates;');
+                done();
+            });
+            stream.write(getFakeFile('test/file1.js', 'hello {{place}}'));
+            stream.write(getFakeFile('test/file2.js', '{{greeting}} world'));
+            stream.end();
+        });
+
         it('should allow passing an object to populate with templates instead of a filename', function(done) {
             var templates = {};
             var stream = compile(templates);

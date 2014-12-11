@@ -35,7 +35,8 @@ module.exports = function(dest, options) {
                 path.basename(file.relative, path.extname(file.relative))
             );
         },
-        hoganModule: 'hogan'
+        hoganModule: 'hogan',
+        includeRuntime: true
     }, options || {});
 
     // Do not convert to strings if dest is an object
@@ -70,7 +71,9 @@ module.exports = function(dest, options) {
 
         // All wrappers require a hogan module
         if (options.wrapper) {
-            lines.unshift('    var Hogan = require(\'' + options.hoganModule  + '\');');
+            if (options.includeRuntime) {
+              lines.unshift('    var Hogan = require(\'' + options.hoganModule  + '\');');
+            }
             lines.push('    return templates;');
         }
         // AMD wrapper
