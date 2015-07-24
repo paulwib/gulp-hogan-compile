@@ -58,7 +58,7 @@ module.exports = function(dest, options) {
 
     function endStream(){
         // If no templates or dest is an object nothing more to do
-        if (templates.length === 0 || typeof dest === 'object') {
+        if (!firstFile || typeof dest === 'object') {
             return this.emit('end');
         }
         var lines = [];
