@@ -160,5 +160,14 @@ describe('gulp-compile-hogan', function() {
             stream.write(getFakeFile('test/file2.js', '{{greeting}} world'));
             stream.end();
     	});
+
+        it('should emit end when no files are passed through the stream', function(done) {
+            var stream = compile('test.js');
+            stream.on('end', function(newFile) {
+                expect(newFile).to.be.undefined;
+                done();
+            });
+            stream.end();
+        });
     });
 });
