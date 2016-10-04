@@ -35,7 +35,7 @@ In your code:
 
 This will compile the templates into a JavaScript AMD module using `hogan.compile`.
 
-It will `require('hogan')` so that module needs to be available, for example by installing it with [bower][]. You can change the name/path of the hogan module at compile time  with `options.hoganModule`.
+It will `require('hogan')` so that module needs to be available. You can change the name/path of the hogan module at compile time  with `options.hoganModule`.
 
 Alternatively you can pass an object to have it populated with executable templates, which is useful if you need templates as part of a build step, for example:
 
@@ -72,7 +72,7 @@ Either `amd`, `commonjs` or `false` for no wrapper, defaults to `amd`. If wrappe
 
 ### templateOptions `object`
 
-Options passed through to `hogan.compile`. `asString` will be set depending on whether output is a file or an object, any passed setting is ignored.
+Options passed through to `hogan.compile`. The `asString` option will be set depending on whether output is a file or an object, any passed setting is ignored.
 
 ### templateName `function(file)`
 
