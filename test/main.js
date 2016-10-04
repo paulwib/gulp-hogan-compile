@@ -143,7 +143,7 @@ describe('gulp-compile-hogan', function() {
 
     	it('should have custom template variable name', function(done) {
     	    var stream = compile('test.js', {
-                templatesVariableName: "customTemplates"
+                templatesVariableName: 'customTemplates'
             });
             stream.on('data', function(newFile){
                 var lines = newFile.contents.toString().split(gutil.linefeed);
