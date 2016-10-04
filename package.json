@@ -17,10 +17,10 @@
     "url": "https://github.com/paulwib"
   },
   "dependencies": {
-    "extend": "^2.0.0",
-    "gulp-util": "~3.0.1",
-    "hogan.js": "~3.0.0",
-    "through": "~2.3.0"
+    "extend": "^3.0.0",
+    "gulp-util": "^3.0.1",
+    "hogan.js": "^3.0.0",
+    "through": "^2.3.0"
   },
   "devDependencies": {
     "chai": "^1.9.2",
