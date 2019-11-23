@@ -5,20 +5,18 @@
 var compile = require('../');
 var should = require('should');
 var expect = require('chai').expect;
-var os = require('os');
 var path = require('path');
-var gutil = require('gulp-util');
-var File = gutil.File;
+var Vinyl = require('vinyl');
 var Buffer = require('buffer').Buffer;
 
 describe('gulp-compile-hogan', function() {
 
     function getFakeFile(path, content) {
-        return new File({
+        return new Vinyl({
             cwd: '',
             base: 'test/',
             path: path,
-            contents: new Buffer(content)
+            contents: new Buffer.from(content)
         });
     }
 
@@ -60,7 +58,7 @@ describe('gulp-compile-hogan', function() {
         it('should compile string templates to amd modules', function(done) {
             var stream = compile('test.js');
             stream.on('data', function(newFile){
-                var lines = newFile.contents.toString().split(gutil.linefeed);
+                var lines = newFile.contents.toString().split('\n');
                 lines[0].should.equal('define(function(require) {');
                 lines[1].should.equal('    var Hogan = require(\'hogan\');');
                 lines[2].should.equal('    var templates = {};');
@@ -80,7 +78,7 @@ describe('gulp-compile-hogan', function() {
                 wrapper: 'commonjs'
             });
             stream.on('data', function(newFile){
-                var lines = newFile.contents.toString().split(gutil.linefeed);
+                var lines = newFile.contents.toString().split('\n');
                 lines[0].should.equal('module.exports = (function() {');
                 lines[1].should.equal('    var Hogan = require(\'hogan\');');
                 lines[2].should.equal('    var templates = {};');
@@ -141,12 +139,12 @@ describe('gulp-compile-hogan', function() {
             stream.end();
         });
 
-    	it('should have custom template variable name', function(done) {
-    	    var stream = compile('test.js', {
+        it('should have custom template variable name', function(done) {
+            var stream = compile('test.js', {
                 templatesVariableName: 'customTemplates'
             });
             stream.on('data', function(newFile){
-                var lines = newFile.contents.toString().split(gutil.linefeed);
+                var lines = newFile.contents.toString().split('\n');
                 lines[0].should.equal('define(function(require) {');
                 lines[1].should.equal('    var Hogan = require(\'hogan\');');
                 lines[2].should.equal('    var customTemplates = {};');
@@ -159,7 +157,7 @@ describe('gulp-compile-hogan', function() {
             stream.write(getFakeFile('test/foo/file1.js', 'hello {{place}}'));
             stream.write(getFakeFile('test/file2.js', '{{greeting}} world'));
             stream.end();
-    	});
+        });
 
         it('should emit end when no files are passed through the stream', function(done) {
             var stream = compile('test.js');
