@@ -1,11 +1,9 @@
 'use strict';
 
 var through = require('through');
-var os = require('os');
 var path = require('path');
-var gutil = require('gulp-util');
-var PluginError = gutil.PluginError;
-var File = gutil.File;
+var PluginError = require('plugin-error');
+var Vinyl = require('vinyl');
 var hogan = require('hogan.js');
 var extend = require('extend');
 
@@ -26,7 +24,7 @@ module.exports = function(dest, options) {
         firstFile = null;
 
     options = extend(true, {
-        newLine: gutil.linefeed,
+        newLine: '\n',
         wrapper: 'amd',
         templateOptions: {},
         templateName: function(file) {
@@ -58,7 +56,7 @@ module.exports = function(dest, options) {
     }
 
     function endStream(){
-	   var templatesVariableName = options.templatesVariableName;
+        var templatesVariableName = options.templatesVariableName;
 
         // If no templates or dest is an object nothing more to do
         if (!firstFile || typeof dest === 'object') {
@@ -87,11 +85,11 @@ module.exports = function(dest, options) {
             lines.push('})();');
         }
 
-        this.emit('data', new File({
+        this.emit('data', new Vinyl({
             cwd: firstFile.cwd,
             base: firstFile.base,
             path: path.join(firstFile.base, dest),
-            contents: new Buffer(lines.join(options.newLine))
+            contents: new Buffer.from(lines.join(options.newLine))
         }));
 
         this.emit('end');
