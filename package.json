@@ -23,9 +23,9 @@
     "through": "^2.3.0"
   },
   "devDependencies": {
-    "chai": "^1.9.2",
-    "mocha": "~2.0.0",
-    "should": "~4.1.0"
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "should": "^13.2.3"
   },
   "engines": {
     "node": ">=0.9"
