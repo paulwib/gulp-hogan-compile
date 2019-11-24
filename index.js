@@ -5,7 +5,6 @@ var path = require('path');
 var PluginError = require('plugin-error');
 var Vinyl = require('vinyl');
 var hogan = require('hogan.js');
-var extend = require('extend');
 
 /**
  * Compile hogan templates into a js file
@@ -23,7 +22,7 @@ module.exports = function(dest, options) {
     var templates = typeof dest === 'object' ? dest : {},
         firstFile = null;
 
-    options = extend(true, {
+    options = {
         newLine: '\n',
         wrapper: 'amd',
         templateOptions: {},
@@ -34,8 +33,9 @@ module.exports = function(dest, options) {
             );
         },
         templatesVariableName: 'templates',
-        hoganModule: 'hogan'
-    }, options || {});
+        hoganModule: 'hogan',
+        ...options
+    };
 
     // Do not convert to strings if dest is an object
     options.templateOptions.asString = typeof dest !== 'object';
