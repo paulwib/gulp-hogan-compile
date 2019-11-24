@@ -1,6 +1,6 @@
 {
   "name": "gulp-hogan-compile",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "A gulp plugin to compile mustache HTML templates to JavaScript functions using hogan.",
   "main": "index.js",
   "homepage": "https://github.com/paulwib/gulp-hogan-compile",
